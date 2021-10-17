@@ -1,10 +1,23 @@
 <template>
-    <div class="custom-checkbox">
-        <input type="checkbox" id="todo-item" v-bind:checked="isDone" class="checkbox" @change="$emit('checkbox-changed')"/>
-        <label for="todo-item" class="checkbox-label"> {{label}} </label>
+    <div class="stack-small" v-if="!isEditing">
+        <div class="custom-checkbox">
+            <input type="checkbox" id="todo-item" v-bind:checked="isDone" class="checkbox" @change="$emit('checkbox-changed')"/>
+            <label for="todo-item" class="checkbox-label"> {{label}} </label>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn" @click="toggleToItemEditForm">
+            Edit <span class="visually-hidden"> {{label}}</span>
+            </button>
+            <button type="button" class="btn btn__danger" @click="deleteTodo">
+            Delete <span class="visually-hidden">{{label}}</span>
+            </button>
+        </div>
     </div>
+    <todo-item-edit-form v-else :id="id" :label="label" @edit-cancelled="editCancelled" @item-edited="itemEdited">
+    </todo-item-edit-form>
 </template>
 <script>
+import TodoItemEditForm from "./TodoItemEditForm"
     export default {
         props: {
             label: {
@@ -23,7 +36,31 @@
         },
         data(){
             return {
-                isDone: this.done
+                isEditing: false
+            }
+        },
+        methods: {
+            deleteTodo(){
+                this.$emit('item-deleted');
+            },
+            toggleToItemEditForm(){
+                this.isEditing = true;
+            },
+            itemEdited(newLabel){
+                this.$emit('item-edited', newLabel)
+                this.isEditing = false
+            },
+            editCancelled(){
+                console.log("cancelled event caught")
+                this.isEditing = false
+            }
+        },
+        components: {
+            TodoItemEditForm
+        },
+        computed: {
+            isDone(){
+                return this.done;
             }
         }
         

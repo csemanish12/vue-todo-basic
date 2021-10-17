@@ -5,7 +5,8 @@
     <h2 id="list-summary">{{listSummary}}</h2>
     <ul aria-labelledby="list-summary" class="stack-large">
       <li v-for="item in TodoItems" :key="item.id">
-        <TodoItem :label="item.label" :done="item.done" :id="item.id" @checkbox-changed="updateDoneStatus(item.id)"></TodoItem>
+        <TodoItem :label="item.label" :done="item.done" :id="item.id" @checkbox-changed="updateDoneStatus(item.id)" @item-deleted="deleteTodo(item.id)" @item-edited="editTodo(item.id, $event)">
+        </TodoItem>
       </li>
     </ul>
   </div>
@@ -39,6 +40,14 @@ export default {
     updateDoneStatus(todoId){
       const todoUpdate = this.TodoItems.find(item=>item.id === todoId)
       todoUpdate.done = !todoUpdate.done
+    },
+    deleteTodo(todoId){
+      const itemIndex = this.TodoItems.findIndex(item => item.id === todoId)
+      this.TodoItems.splice(itemIndex, 1)
+    },
+    editTodo(todoId, newLabel){
+      const todoToEdit = this.TodoItems.find(item => item.id === todoId)
+      todoToEdit.label = newLabel 
     }
   },
   computed: {
