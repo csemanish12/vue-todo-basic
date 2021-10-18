@@ -2,7 +2,7 @@
   <div id="app">
     <h1> Todo List</h1>
     <TodoForm @todo-added="addTodo"></TodoForm>
-    <h2 id="list-summary">{{listSummary}}</h2>
+    <h2 id="list-summary" ref="listSummary" tabindex="-1">{{listSummary}}</h2>
     <ul aria-labelledby="list-summary" class="stack-large">
       <li v-for="item in TodoItems" :key="item.id">
         <TodoItem :label="item.label" :done="item.done" :id="item.id" @checkbox-changed="updateDoneStatus(item.id)" @item-deleted="deleteTodo(item.id)" @item-edited="editTodo(item.id, $event)">
@@ -44,6 +44,7 @@ export default {
     deleteTodo(todoId){
       const itemIndex = this.TodoItems.findIndex(item => item.id === todoId)
       this.TodoItems.splice(itemIndex, 1)
+      this.$refs.listSummary.focus();
     },
     editTodo(todoId, newLabel){
       const todoToEdit = this.TodoItems.find(item => item.id === todoId)

@@ -5,7 +5,7 @@
             <label for="todo-item" class="checkbox-label"> {{label}} </label>
         </div>
         <div class="btn-group">
-            <button type="button" class="btn" @click="toggleToItemEditForm">
+            <button type="button" class="btn" ref="editButton" @click="toggleToItemEditForm">
             Edit <span class="visually-hidden"> {{label}}</span>
             </button>
             <button type="button" class="btn btn__danger" @click="deleteTodo">
@@ -44,15 +44,25 @@ import TodoItemEditForm from "./TodoItemEditForm"
                 this.$emit('item-deleted');
             },
             toggleToItemEditForm(){
+                console.log('.....refs.....',this.$refs.editButton)
                 this.isEditing = true;
             },
             itemEdited(newLabel){
                 this.$emit('item-edited', newLabel)
                 this.isEditing = false
+                this.focusOnEditButton();
             },
             editCancelled(){
                 console.log("cancelled event caught")
                 this.isEditing = false
+                this.focusOnEditButton();
+            },
+            focusOnEditButton(){
+                this.$nextTick(() => {
+                    const editButtonRef = this.$refs.editButton;
+                    editButtonRef.focus();
+                })
+                
             }
         },
         components: {
